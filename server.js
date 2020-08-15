@@ -5,6 +5,10 @@ const next = require('next');
 const { default: createShopifyAuth } = require('@shopify/koa-shopify-auth');
 const { verifyRequest } = require('@shopify/koa-shopify-auth');
 const session = require('koa-session');
+const {
+	default: graphQLProxy,
+	ApiVersion,
+} = require('@shopify/koa-shopify-graphql-proxy');
 
 dotenv.config();
 const { PORT, NODE_ENV, SHOPIFY_API_KEY, SHOPIFY_API_SECRET_KEY } = process.env;
@@ -31,12 +35,18 @@ app.prepare().then(() => {
 			],
 			afterAuth(context) {
 				const { shop, accessToken } = context.session;
+				context.cookies.set('shopOrigin', shop, {
+					httpOnly: false,
+					secure: true,
+					sameSite: 'none',
+				});
 
 				context.redirect('/');
 			},
 		})
 	);
 
+	server.use(graphQLProxy({ version: ApiVersion.July20 }));
 	server.use(verifyRequest());
 	server.use(async context => {
 		await handle(context.req, context.res);
