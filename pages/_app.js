@@ -1,33 +1,22 @@
-import React, { Fragment } from 'react';
 import App from 'next/app';
 import Head from 'next/head';
 import { AppProvider } from '@shopify/polaris';
 import { Provider } from '@shopify/app-bridge-react';
-import Cookies from 'js-cookie';
+import '@shopify/polaris/styles.css';
 import translations from '@shopify/polaris/locales/en.json';
-import {
-	ApolloProvider,
-	createHttpLink,
-	ApolloClient,
-	InMemoryCache,
-} from '@apollo/client';
-
-import '@shopify/polaris/dist/styles.css';
-
-const cache = new InMemoryCache();
-const link = createHttpLink({
-	uri: 'https://cc150bd15dba.ngrok.io', // change this to next.config.js later on
-});
+import Cookies from 'js-cookie';
+import ApolloClient from 'apollo-boost';
+import { ApolloProvider } from 'react-apollo';
 
 const client = new ApolloClient({
-	cache: cache,
-	link: link,
+	fetchOptions: {
+		credentials: 'include',
+	},
 });
 
 class MyApp extends App {
 	render() {
 		const { Component, pageProps } = this.props;
-
 		const config = {
 			apiKey: API_KEY,
 			shopOrigin: Cookies.get('shopOrigin'),
@@ -35,19 +24,19 @@ class MyApp extends App {
 		};
 
 		return (
-			<Fragment>
+			<React.Fragment>
 				<Head>
-					<title>Sample Shopify App</title>
+					<title>Sample App</title>
 					<meta charSet='utf-8' />
 				</Head>
 				<Provider config={config}>
-					<AppProvider il8n={translations}>
+					<AppProvider i18n={translations}>
 						<ApolloProvider client={client}>
 							<Component {...pageProps} />
 						</ApolloProvider>
 					</AppProvider>
 				</Provider>
-			</Fragment>
+			</React.Fragment>
 		);
 	}
 }

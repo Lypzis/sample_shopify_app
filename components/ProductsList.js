@@ -1,13 +1,14 @@
-import React, { memo, useEffect } from 'react';
-import { gql, useQuery } from '@apollo/client';
+import gql from 'graphql-tag';
+import { useQuery } from '@apollo/react-hooks';
 import {
 	Card,
+	Button,
 	ResourceList,
 	Stack,
 	TextStyle,
 	Thumbnail,
 } from '@shopify/polaris';
-import store from 'store';
+import store from 'store-js';
 
 const GET_PRODUCTS_BY_ID = gql`
 	query getProducts($ids: [ID!]!) {
@@ -37,20 +38,60 @@ const GET_PRODUCTS_BY_ID = gql`
 	}
 `;
 
-function ProductsList() {
+const ProductsList = props => {
 	const { loading, error, data } = useQuery(GET_PRODUCTS_BY_ID, {
-		variables: { ids: store.get('ids') },
+		variables: { ids: props.products },
 	});
 
-	if (loading) return <p>Loading...</p>;
+	if (loading) return <div>Loading...</div>;
+	if (error) return <div>{error.message}</div>;
 
-	if (error) return <p>{error.message}</p>;
+	if (data) console.log(data);
 
 	return (
-		<div>
-			<h1>Hello From Products List</h1>
-		</div>
+		<Card>
+			<ResourceList
+				showHeader
+				resourceName={{
+					singular: 'Product',
+					plural: 'Products',
+				}}
+				items={data.nodes}
+				renderItem={(item, id, index) => {
+					let src = '';
+					let alt = '';
+					if (item.images.edges[0]) {
+						src = item.images.edges[0].node.originalSrc;
+						alt = item.images.edges[0].node.altText;
+					}
+
+					const media = <Thumbnail source={src} alt={alt} />;
+
+					const price = item.variants.edges[0].node.price;
+
+					return (
+						<ResourceList.Item
+							id={item.id}
+							media={media}
+							accessibilityLabel={`View Details for ${item.title}`}>
+							<Stack>
+								<Stack.Item fill>
+									<h3>
+										<TextStyle variation='strong'>
+											{item.title}
+										</TextStyle>
+									</h3>
+								</Stack.Item>
+								<Stack.Item>
+									<p>${price}</p>
+								</Stack.Item>
+							</Stack>
+						</ResourceList.Item>
+					);
+				}}
+			/>
+		</Card>
 	);
-}
+};
 
 export default ProductsList;
