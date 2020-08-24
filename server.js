@@ -26,6 +26,7 @@ const server = new Koa();
 
 const router = new KoaRouter();
 
+// replaceable by a true database
 let products = []; // { name: 'test01' }, { name: 'test02' }
 
 router.get('/api/products', async context => {

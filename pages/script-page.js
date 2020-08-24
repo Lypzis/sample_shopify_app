@@ -79,7 +79,7 @@ const ScriptPage = props => {
 										input: {
 											// NOTE: this needs to be changed every time you turn off ngrok
 											src:
-												'https://6cb9557c3035.ngrok.io/test-script.js',
+												'https://6721ec0453f2.ngrok.io/test-script.js',
 											displayScope: 'ALL',
 										},
 									},
@@ -137,48 +137,6 @@ const ScriptPage = props => {
 				</Layout.Section>
 			</Layout>
 		</Page>
-		// <div>
-		// 	<h1>These are the script tags right now:</h1>
-
-		// 	<button
-		// 		type='submit'
-		// 		onClick={() =>
-		// 			createScript({
-		// 				variables: {
-		// 					input: {
-		// 						src:
-		// 							'https://e9b5d8ac0a5a.ngrok.io/test-script.js',
-		// 						displayScope: 'ALL',
-		// 					},
-		// 				},
-		// 				refetchQueries: [{ query: QUERY_SCRIPTTAGS }],
-		// 			})
-		// 		}>
-		// 		Create Script Tag
-		// 	</button>
-
-		// 	{data.scriptTags.edges.map(item => {
-		// 		return (
-		// 			<div key={item.node.id}>
-		// 				<p>{item.node.id}</p>
-		// 				<button
-		// 					type='submit'
-		// 					onClick={() =>
-		// 						deleteScript({
-		// 							variables: {
-		// 								id: item.node.id,
-		// 							},
-		// 							refetchQueries: [
-		// 								{ query: QUERY_SCRIPTTAGS },
-		// 							],
-		// 						})
-		// 					}>
-		// 					Delete Script Tag
-		// 				</button>
-		// 			</div>
-		// 		);
-		// 	})}
-		// </div>
 	);
 };
 
